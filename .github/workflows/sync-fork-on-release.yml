@@ -1,0 +1,25 @@
+name: Sync Fork on Release
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  sync_fork:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Fork
+        uses: actions/checkout@v3
+
+      - name: Set Upstream Repository
+        run: git remote add upstream https://github.com/open-webui/open-webui.git
+
+      - name: Fetch Release Tag
+        run: git fetch upstream ${{ github.event.release.tag_name }}
+
+      - name: Checkout Release Tag
+        run: |
+          git checkout ${{ github.event.release.tag_name }}
+          git push origin ${{ github.event.release.tag_name }}
